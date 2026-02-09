@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick Our Date Location ❤️</title>
+    <style>
+        :root {
+            --pink: #ffafbd;
+            --rose: #ffc3a0;
+            --dark-pink: #e91e63;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--pink), var(--rose));
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 { color: var(--dark-pink); margin-bottom: 20px; }
+
+        .option-container {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: bold;
+            color: #444;
+            text-align: left;
+        }
+
+        .option-container.selected {
+            border-color: var(--dark-pink);
+            background: #fff0f3;
+            transform: scale(1.02);
+        }
+
+        input[type="checkbox"] {
+            accent-color: var(--dark-pink);
+            transform: scale(1.5);
+        }
+
+        #submitBtn {
+            margin-top: 25px;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--dark-pink);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        #finalMessage {
+            display: none;
+            color: var(--dark-pink);
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .gif-small {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img class="gif-small" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWRidXJscms0bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiMKdJ/giphy.gif">
+        <h2>Yay! 🥰 Since you said YES...</h2>
+        <p id="instruction">Choose 3 restaurants you'd like to visit:</p>
+
+        <div id="restaurant-list">
+            <label class="option-container">
+                <input type="checkbox" class="rest-option" value="Italian"> 🍝 Italian / Pasta
+            </label>
+            <label class="option-container">
+                <input type="checkbox" class="rest-option" value="Samgyupsal"> 🥘 Samgyupsal / KBBQ
+            </label>
+            <label class="option-container">
+                <input type="checkbox" class="rest-option" value="Steakhouse"> 🥩 Steak & Wine
+            </label>
+            <label class="option-container">
+                <input type="checkbox" class="rest-option" value="Japanese"> 🍣 Sushi / Ramen
+            </label>
+            <label class="option-container">
+                <input type="checkbox" class="rest-option" value="Cafe"> ☕ Coffee & Brunch
+            </label>
+            <label class="option-container">
+                <input type="checkbox" class="rest-option" value="Seafood"> 🦀 Seafood
+            </label>
+        </div>
+
+        <button id="submitBtn">Confirm Selections (0/3)</button>
+        <div id="finalMessage">Got it! I'll prepare everything. See you on the 14th! 💖✨</div>
+    </div>
+
+    <script>
+        const checkboxes = document.querySelectorAll('.rest-option');
+        const submitBtn = document.getElementById('submitBtn');
+        const finalMessage = document.getElementById('finalMessage');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const checked = document.querySelectorAll('.rest-option:checked');
+                checkbox.parentElement.classList.toggle('selected', checkbox.checked);
+
+                if (checked.length > 0) {
+                    submitBtn.style.display = "block";
+                    submitBtn.innerText = `Confirm Selections (${checked.length}/3)`;
+                } else {
+                    submitBtn.style.display = "none";
+                }
+
+                if (checked.length >= 3) {
+                    checkboxes.forEach(cb => {
+                        if (!cb.checked) cb.disabled = true;
+                    });
+                } else {
+                    checkboxes.forEach(cb => cb.disabled = false);
+                }
+            });
+        });
+
+        submitBtn.addEventListener('click', () => {
+            document.getElementById('restaurant-list').style.display = "none";
+            submitBtn.style.display = "none";
+            document.getElementById('instruction').style.display = "none";
+            finalMessage.style.display = "block";
+        });
+    </script>
+</body>
+</html>
