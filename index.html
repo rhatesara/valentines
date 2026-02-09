@@ -11,6 +11,11 @@
             --dark-pink: #e91e63;
         }
 
+        /* Initially hide everything */
+        #mainContent {
+            display: none;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -80,16 +85,45 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1>Will you be my Valentine, Margo?</h1>
-        
-        <div class="buttons">
-            <button id="yesBtn">YES!</button>
-            <button id="noBtn">No</button>
+    <div id="mainContent">
+        <div class="container">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJLufpNwSULPk2m/giphy.gif" alt="Asking...">
+            </div>
+            <h1>Will you be my Valentine?</h1>
+            <p>I have something special planned!</p>
+            
+            <div class="buttons">
+                <button id="yesBtn">YES!</button>
+                <button id="noBtn">No</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // --- PASSCODE LOGIC ---
+        const PASSCODE = "1234"; // <--- PALITAN MO ITO NG GUSTO MONG CODE
+        
+        function checkPasscode() {
+            let userEntry = prompt("Enter the secret code to open your invitation:");
+            
+            if (userEntry === PASSCODE) {
+                // Show the content if correct
+                document.getElementById('mainContent').style.display = 'block';
+            } else if (userEntry === null) {
+                // If they cancel, just leave the page blank or reload
+                alert("You need the code to see this! 🌸");
+                location.reload();
+            } else {
+                alert("Wrong code! Try again. ❤️");
+                checkPasscode(); // Ask again
+            }
+        }
+
+        // Run the check as soon as the page loads
+        window.onload = checkPasscode;
+
+        // --- VALENTINE BUTTON LOGIC ---
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
 
@@ -102,8 +136,7 @@
         });
 
         yesBtn.addEventListener('click', () => {
-            // Changed to ./restau.html to ensure it finds the file in the same directory
-            window.location.href = "./restau.html";
+            window.location.href = "restau.html";
         });
     </script>
 </body>
