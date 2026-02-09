@@ -61,6 +61,17 @@
             transform: scale(1.5);
         }
 
+        input[type="text"] {
+            border: none;
+            border-bottom: 2px solid var(--dark-pink);
+            padding: 5px;
+            outline: none;
+            width: 100%;
+            font-family: inherit;
+            margin-top: 5px;
+            background: transparent;
+        }
+
         #submitBtn {
             margin-top: 25px;
             width: 100%;
@@ -98,39 +109,42 @@
 
         <div id="restaurant-list">
             <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Italian"> 🍝 Italian / Pasta
+                <input type="checkbox" class="rest-option" value="Tong Yang Plus"> 🍲 Tong Yang Plus
             </label>
             <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Samgyupsal"> 🥘 Samgyupsal / KBBQ
+                <input type="checkbox" class="rest-option" value="Din Tai Fung"> 🥟 Din Tai Fung
             </label>
             <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Steakhouse"> 🥩 Steak & Wine
+                <input type="checkbox" class="rest-option" value="Ding Qua Quan Gmall"> 🍱 Ding Qua Quan Gmall
             </label>
-            <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Japanese"> 🍣 Sushi / Ramen
-            </label>
-            <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Cafe"> ☕ Coffee & Brunch
-            </label>
-            <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Seafood"> 🦀 Seafood
+            <label class="option-container" id="custom-option">
+                <input type="checkbox" class="rest-option" id="otherCheck"> 
+                <div>
+                    <span>Others:</span>
+                    <input type="text" id="otherText" placeholder="Ano gusto mo?">
+                </div>
             </label>
         </div>
 
         <button id="submitBtn">Confirm Selections (0/3)</button>
-        <div id="finalMessage">Got it! I'll prepare everything. See you on the 14th! 💖✨</div>
+        <div id="finalMessage">Got it! Opening WhatsApp to let me know... 💖✨</div>
     </div>
 
     <script>
         const checkboxes = document.querySelectorAll('.rest-option');
         const submitBtn = document.getElementById('submitBtn');
-        const finalMessage = document.getElementById('finalMessage');
+        const otherText = document.getElementById('otherText');
+        const otherCheck = document.getElementById('otherCheck');
+
+        // Your Phone Number (Format: 639123456789)
+        const MY_PHONE = "639XXXXXXXXX"; // <-- REPLACE THIS WITH YOUR NUMBER
 
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
                 const checked = document.querySelectorAll('.rest-option:checked');
                 checkbox.parentElement.classList.toggle('selected', checkbox.checked);
 
+                // Show/Update Submit button
                 if (checked.length > 0) {
                     submitBtn.style.display = "block";
                     submitBtn.innerText = `Confirm Selections (${checked.length}/3)`;
@@ -138,6 +152,7 @@
                     submitBtn.style.display = "none";
                 }
 
+                // Limit to 3
                 if (checked.length >= 3) {
                     checkboxes.forEach(cb => {
                         if (!cb.checked) cb.disabled = true;
@@ -149,10 +164,27 @@
         });
 
         submitBtn.addEventListener('click', () => {
+            const selected = [];
+            document.querySelectorAll('.rest-option:checked').forEach(cb => {
+                if(cb.id === "otherCheck") {
+                    selected.push(otherText.value || "Something else!");
+                } else {
+                    selected.push(cb.value);
+                }
+            });
+
+            const message = `Hi! I picked these 3 for our Valentine's date: ${selected.join(", ")} ❤️`;
+            const whatsappUrl = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(message)}`;
+
             document.getElementById('restaurant-list').style.display = "none";
             submitBtn.style.display = "none";
             document.getElementById('instruction').style.display = "none";
-            finalMessage.style.display = "block";
+            document.getElementById('finalMessage').style.display = "block";
+
+            // Redirect to WhatsApp after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = whatsappUrl;
+            }, 1500);
         });
     </script>
 </body>
