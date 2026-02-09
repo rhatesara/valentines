@@ -50,13 +50,14 @@
             text-align: left;
         }
 
-        .option-container.selected {
+        /* Highlight the selected radio button container */
+        .option-container:has(input:checked) {
             border-color: var(--dark-pink);
             background: #fff0f3;
             transform: scale(1.02);
         }
 
-        input[type="checkbox"] {
+        input[type="radio"] {
             accent-color: var(--dark-pink);
             transform: scale(1.5);
         }
@@ -83,7 +84,7 @@
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            display: none;
+            display: none; /* Hidden until something is picked */
         }
 
         #finalMessage {
@@ -105,63 +106,48 @@
     <div class="container">
         <img class="gif-small" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWRidXJscms0bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiMKdJ/giphy.gif">
         <h2>Yay! 🥰 Since you said YES...</h2>
-        <p id="instruction">Choose up to 3 restaurants you'd like to visit:</p>
+        <p id="instruction">Saan mo gusto kumain? (Pick one):</p>
 
         <form id="restaurantForm" action="https://formspree.io/f/mnjbnpor" method="POST">
             <div id="restaurant-list">
                 <label class="option-container">
-                    <input type="checkbox" name="Restau_1" class="rest-option" value="Tong Yang Plus"> Tong Yang Plus
+                    <input type="radio" name="Selected_Restaurant" value="Tong Yang Plus" required> Tong Yang Plus
                 </label>
                 <label class="option-container">
-                    <input type="checkbox" name="Restau_2" class="rest-option" value="Din Tai Fung"> Din Tai Fung
+                    <input type="radio" name="Selected_Restaurant" value="Din Tai Fung"> Din Tai Fung
                 </label>
                 <label class="option-container">
-                    <input type="checkbox" name="Restau_3" class="rest-option" value="Ding Qua Quan Gmall"> Ding Qua Quan Gmall
+                    <input type="radio" name="Selected_Restaurant" value="Ding Qua Quan Gmall"> Ding Qua Quan Gmall
                 </label>
                 <label class="option-container">
-                    <input type="checkbox" name="Restau_Other_Check" class="rest-option" id="otherCheck"> 
+                    <input type="radio" name="Selected_Restaurant" id="otherRadio" value="Custom Choice"> 
                     <div>
                         <span>Others:</span>
-                        <input type="text" name="Custom_Choice" id="otherText" placeholder="enter kung ano gusto mo">
+                        <input type="text" name="Custom_Choice_Text" id="otherText" placeholder="enter kung ano gusto mo" onfocus="document.getElementById('otherRadio').checked = true; updateButton();">
                     </div>
                 </label>
             </div>
 
-            <button type="submit" id="submitBtn">Confirm Selections (0/3)</button>
+            <button type="submit" id="submitBtn">Confirm Selection ❤️</button>
         </form>
 
-        <div id="finalMessage">Got it! Your choices have been sent to my email. See you on the 14th! 💖✨</div>
+        <div id="finalMessage">Got it! Choice sent to my email. See you on the 14th! 💖✨</div>
     </div>
 
     <script>
         const form = document.getElementById('restaurantForm');
-        const checkboxes = document.querySelectorAll('.rest-option');
+        const radios = document.querySelectorAll('input[name="Selected_Restaurant"]');
         const submitBtn = document.getElementById('submitBtn');
 
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                const checked = document.querySelectorAll('.rest-option:checked');
-                
-                checkbox.parentElement.classList.toggle('selected', checkbox.checked);
+        function updateButton() {
+            submitBtn.style.display = "block";
+        }
 
-                if (checked.length > 0) {
-                    submitBtn.style.display = "block";
-                    submitBtn.innerText = `Confirm Selections (${checked.length}/3)`;
-                } else {
-                    submitBtn.style.display = "none";
-                }
-
-                if (checked.length >= 3) {
-                    checkboxes.forEach(cb => {
-                        if (!cb.checked) cb.disabled = true;
-                    });
-                } else {
-                    checkboxes.forEach(cb => cb.disabled = false);
-                }
-            });
+        radios.forEach(radio => {
+            radio.addEventListener('change', updateButton);
         });
 
-        // AJAX Submission to keep the experience smooth
+        // AJAX Submission
         form.onsubmit = async (e) => {
             e.preventDefault();
             
