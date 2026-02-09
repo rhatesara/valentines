@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>A Special Invitation ❤️</title>
     <style>
         :root {
@@ -11,7 +16,7 @@
             --dark-pink: #e91e63;
         }
 
-        /* Initially hide everything */
+        /* Hidden until passcode is correct */
         #mainContent {
             display: none;
         }
@@ -87,11 +92,7 @@
 
     <div id="mainContent">
         <div class="container">
-            <div class="gif-container">
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3bmZ3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/c76IJLufpNwSULPk2m/giphy.gif" alt="Asking...">
-            </div>
-            <h1>Will you be my Valentine?</h1>
-            <p>I have something special planned!</p>
+            <h1>Will you be my Valentine, Margo?</h1>
             
             <div class="buttons">
                 <button id="yesBtn">YES!</button>
@@ -102,28 +103,25 @@
 
     <script>
         // --- PASSCODE LOGIC ---
-        const PASSCODE = "MY LOVE"; // <--- PALITAN MO ITO NG GUSTO MONG CODE
+        const PASSCODE = "1234"; // Update this to your preferred code
         
         function checkPasscode() {
             let userEntry = prompt("Enter the secret code to open your invitation:");
             
             if (userEntry === PASSCODE) {
-                // Show the content if correct
                 document.getElementById('mainContent').style.display = 'block';
             } else if (userEntry === null) {
-                // If they cancel, just leave the page blank or reload
-                alert("You need the code to see this! 🌸");
+                alert("The code is required to see the surprise! 🌸");
                 location.reload();
             } else {
-                alert("Wrong code! Try again. ❤️");
-                checkPasscode(); // Ask again
+                alert("Maling code! Try again. ❤️");
+                checkPasscode();
             }
         }
 
-        // Run the check as soon as the page loads
         window.onload = checkPasscode;
 
-        // --- VALENTINE BUTTON LOGIC ---
+        // --- BUTTONS ---
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
 
@@ -136,7 +134,8 @@
         });
 
         yesBtn.addEventListener('click', () => {
-            window.location.href = "restau.html";
+            // Adding a random query string to bypass cache on redirect
+            window.location.href = "restau.html?v=" + new Date().getTime();
         });
     </script>
 </body>
