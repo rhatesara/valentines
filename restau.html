@@ -61,12 +61,12 @@
             transform: scale(1.5);
         }
 
-        input[type="text"] {
+        #otherText {
             border: none;
             border-bottom: 2px solid var(--dark-pink);
             padding: 5px;
             outline: none;
-            width: 100%;
+            width: 80%;
             font-family: inherit;
             margin-top: 5px;
             background: transparent;
@@ -105,46 +105,45 @@
     <div class="container">
         <img class="gif-small" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWRidXJscms0bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3bmR3JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiMKdJ/giphy.gif">
         <h2>Yay! 🥰 Since you said YES...</h2>
-        <p id="instruction">Choose 3 restaurants you'd like to visit:</p>
+        <p id="instruction">Choose up to 3 restaurants you'd like to visit:</p>
 
-        <div id="restaurant-list">
-            <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Tong Yang Plus"> 🍲 Tong Yang Plus
-            </label>
-            <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Din Tai Fung"> 🥟 Din Tai Fung
-            </label>
-            <label class="option-container">
-                <input type="checkbox" class="rest-option" value="Ding Qua Quan Gmall"> 🍱 Ding Qua Quan Gmall
-            </label>
-            <label class="option-container" id="custom-option">
-                <input type="checkbox" class="rest-option" id="otherCheck"> 
-                <div>
-                    <span>Others:</span>
-                    <input type="text" id="otherText" placeholder="Ano gusto mo?">
-                </div>
-            </label>
-        </div>
+        <form id="restaurantForm" action="https://formspree.io/f/mnjbnpor" method="POST">
+            <div id="restaurant-list">
+                <label class="option-container">
+                    <input type="checkbox" name="Restau_1" class="rest-option" value="Tong Yang Plus"> Tong Yang Plus
+                </label>
+                <label class="option-container">
+                    <input type="checkbox" name="Restau_2" class="rest-option" value="Din Tai Fung"> Din Tai Fung
+                </label>
+                <label class="option-container">
+                    <input type="checkbox" name="Restau_3" class="rest-option" value="Ding Qua Quan Gmall"> Ding Qua Quan Gmall
+                </label>
+                <label class="option-container">
+                    <input type="checkbox" name="Restau_Other_Check" class="rest-option" id="otherCheck"> 
+                    <div>
+                        <span>Others:</span>
+                        <input type="text" name="Custom_Choice" id="otherText" placeholder="enter kung ano gusto mo">
+                    </div>
+                </label>
+            </div>
 
-        <button id="submitBtn">Confirm Selections (0/3)</button>
-        <div id="finalMessage">Got it! Opening WhatsApp to let me know... 💖✨</div>
+            <button type="submit" id="submitBtn">Confirm Selections (0/3)</button>
+        </form>
+
+        <div id="finalMessage">Got it! Your choices have been sent to my email. See you on the 14th! 💖✨</div>
     </div>
 
     <script>
+        const form = document.getElementById('restaurantForm');
         const checkboxes = document.querySelectorAll('.rest-option');
         const submitBtn = document.getElementById('submitBtn');
-        const otherText = document.getElementById('otherText');
-        const otherCheck = document.getElementById('otherCheck');
-
-        // Your Phone Number (Format: 639123456789)
-        const MY_PHONE = "639XXXXXXXXX"; // <-- REPLACE THIS WITH YOUR NUMBER
 
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
                 const checked = document.querySelectorAll('.rest-option:checked');
+                
                 checkbox.parentElement.classList.toggle('selected', checkbox.checked);
 
-                // Show/Update Submit button
                 if (checked.length > 0) {
                     submitBtn.style.display = "block";
                     submitBtn.innerText = `Confirm Selections (${checked.length}/3)`;
@@ -152,7 +151,6 @@
                     submitBtn.style.display = "none";
                 }
 
-                // Limit to 3
                 if (checked.length >= 3) {
                     checkboxes.forEach(cb => {
                         if (!cb.checked) cb.disabled = true;
@@ -163,29 +161,26 @@
             });
         });
 
-        submitBtn.addEventListener('click', () => {
-            const selected = [];
-            document.querySelectorAll('.rest-option:checked').forEach(cb => {
-                if(cb.id === "otherCheck") {
-                    selected.push(otherText.value || "Something else!");
-                } else {
-                    selected.push(cb.value);
-                }
+        // AJAX Submission to keep the experience smooth
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const data = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
             });
 
-            const message = `Hi! I picked these 3 for our Valentine's date: ${selected.join(", ")} ❤️`;
-            const whatsappUrl = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(message)}`;
-
-            document.getElementById('restaurant-list').style.display = "none";
-            submitBtn.style.display = "none";
-            document.getElementById('instruction').style.display = "none";
-            document.getElementById('finalMessage').style.display = "block";
-
-            // Redirect to WhatsApp after 1.5 seconds
-            setTimeout(() => {
-                window.location.href = whatsappUrl;
-            }, 1500);
-        });
+            if (response.ok) {
+                document.getElementById('restaurant-list').style.display = "none";
+                submitBtn.style.display = "none";
+                document.getElementById('instruction').style.display = "none";
+                document.getElementById('finalMessage').style.display = "block";
+            } else {
+                alert("Something went wrong. Please check your internet or Formspree settings.");
+            }
+        };
     </script>
 </body>
 </html>
